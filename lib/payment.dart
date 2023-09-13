@@ -12,18 +12,17 @@ class Payment extends StatefulWidget {
 }
 
 class _PaymentState extends State<Payment> {
-   @override
-     void initState() {
-    // TODO: implement initState
-    
+  @override
+  void initState() {
     super.initState();
     // initPaymentSheet();
   }
+
   Map<String, dynamic>? paymentIntent;
   Future<void> makePayment() async {
     try {
       // final paymentIntentId = paymentSheetResult.paymentIntentId;
-      paymentIntent = await createPaymentIntent('100', 'USD');
+      paymentIntent = await createPaymentIntent('100', 'INR');
       //STEP 2: Initialize Payment Sheet
       await Stripe.instance
           .initPaymentSheet(
@@ -31,11 +30,10 @@ class _PaymentState extends State<Payment> {
                   paymentIntentClientSecret: paymentIntent![
                       'client_secret'], //Gotten from payment intent
                   style: ThemeMode.dark,
-                  merchantDisplayName: 'Ikay'))
+                  merchantDisplayName: 'abhi'))
           .then((value) {
         // final paymentSheetResult = value;
         // print(paymentSheetResult.paymentIntentId);
-
       });
 
 //  await Stripe.instance.presentPaymentSheet().then((e) {
@@ -44,6 +42,22 @@ class _PaymentState extends State<Payment> {
       //STEP 3: Display Payment sheet
       displayPaymentSheet();
     } catch (err) {
+      const AlertDialog(
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              children: [
+                Icon(
+                  Icons.cancel,
+                  color: Colors.red,
+                ),
+                Text("Payment Failed"),
+              ],
+            ),
+          ],
+        ),
+      );
       throw Exception(err);
     }
   }
@@ -70,6 +84,23 @@ class _PaymentState extends State<Payment> {
 
         paymentIntent = null;
       }).onError((error, stackTrace) {
+        const AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                children: [
+                  Icon(
+                    Icons.cancel,
+                    color: Colors.red,
+                  ),
+                  Text("Payment Failed"),
+                ],
+              ),
+            ],
+          ),
+        );
+        print(error);
         throw Exception(error);
       });
     } on StripeException catch (e) {
