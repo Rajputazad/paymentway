@@ -12,8 +12,10 @@ class Payment extends StatefulWidget {
 }
 
 class _PaymentState extends State<Payment> {
-   void initState() {
+   @override
+     void initState() {
     // TODO: implement initState
+    
     super.initState();
     // initPaymentSheet();
   }
